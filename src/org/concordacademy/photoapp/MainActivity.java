@@ -1,4 +1,4 @@
-package com.example.photoapp;
+package org.concordacademy.photoapp;
 
 import android.os.Bundle;
 import android.app.Activity;
