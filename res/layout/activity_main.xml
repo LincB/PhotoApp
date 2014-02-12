@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_x="84dp"
         android:layout_y="83dp"
+        android:onClick="enterApp"
         android:text="View Images" />
 
 </AbsoluteLayout>
