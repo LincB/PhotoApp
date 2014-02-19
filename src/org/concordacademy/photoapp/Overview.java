@@ -7,7 +7,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 
 public class Overview extends Activity {
@@ -45,8 +48,20 @@ public class Overview extends Activity {
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
 			
-			ImageView imageView = (ImageView) findViewById(R.id.imageView1);
+			LayoutInflater inflater = LayoutInflater.from(this);
+			
+			GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
+			ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
+			ImageView imageView2 = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+			imageView.setVisibility(0);
+			GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
+			layout.setGravity(Gravity.LEFT | Gravity.TOP);
+			layout.width = 150;
+			layout.height = 115;
+			layout.rowSpec = GridLayout.spec(0);
+			container.addView(imageView,layout);
+			container.addView(imageView2,layout);
 		
 		}
     
