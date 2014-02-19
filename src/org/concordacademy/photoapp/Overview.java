@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 
 public class Overview extends Activity {
 
+	public String TAG = "Overview";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,10 +64,13 @@ public class Overview extends Activity {
 			layout.setGravity(Gravity.LEFT | Gravity.TOP);
 			layout.width = 150;
 			layout.height = 115;
+			GridLayout.LayoutParams layout2 = new GridLayout.LayoutParams(layout);
 			layout.rowSpec = GridLayout.spec(0);
+			layout2.rowSpec = GridLayout.spec(1);
 			container.addView(imageView,layout);
-			container.addView(imageView2,layout);
-		
+			container.addView(imageView2,layout2);
+			Log.i(TAG, Float.toString(imageView2.getX()));
+			Log.i(TAG, Float.toString(imageView2.getY()));
 		}
     }
 }
