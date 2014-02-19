@@ -54,7 +54,9 @@ public class Overview extends Activity {
 			ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			ImageView imageView2 = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+			imageView2.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 			imageView.setVisibility(0);
+			imageView2.setVisibility(0);
 			GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
 			layout.setGravity(Gravity.LEFT | Gravity.TOP);
 			layout.width = 150;
@@ -64,7 +66,5 @@ public class Overview extends Activity {
 			container.addView(imageView2,layout);
 		
 		}
-    
-    
     }
 }
