@@ -1,22 +1,12 @@
 package org.concordacademy.photoapp;
 
 import android.app.Activity;
-<<<<<<< HEAD
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.widget.FrameLayout;
-=======
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.Menu;
->>>>>>> 9792d8f95d26d80df3214d2eff21202d7c077cf7
 import android.widget.ImageView;
 
 public class Overview extends Activity {
@@ -25,7 +15,6 @@ public class Overview extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_overview);
-<<<<<<< HEAD
 		
 		Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getPath() + "AppIcon57x57.png");
 		
@@ -45,13 +34,6 @@ public class Overview extends Activity {
 	    // Get the root layout and add our ImageView
 	    FrameLayout layout = (FrameLayout) findViewById(R.id.FrameLayout1);
 	    layout.addView(image, 0, params);
-=======
-		Intent i = new Intent(
-				Intent.ACTION_PICK,
-				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		
-		startActivityForResult(i, 1);
->>>>>>> 9792d8f95d26d80df3214d2eff21202d7c077cf7
 	}
 
 	@Override
@@ -61,26 +43,4 @@ public class Overview extends Activity {
 		return true;
 	}
 
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	super.onActivityResult(requestCode, resultCode, data);
-    	
-		if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
-			Uri selectedImage = data.getData();
-			String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-			Cursor cursor = getContentResolver().query(selectedImage,
-					filePathColumn, null, null, null);
-			cursor.moveToFirst();
-
-			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			String picturePath = cursor.getString(columnIndex);
-			cursor.close();
-			
-			ImageView imageView = (ImageView) findViewById(R.id.imageView1);
-			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-		
-		}
-    
-    
-    }
 }
