@@ -19,11 +19,6 @@ public class Overview extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_overview);
-		Intent i = new Intent(
-				Intent.ACTION_PICK,
-				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		
-		startActivityForResult(i, 1);
 	}
 
 	@Override
