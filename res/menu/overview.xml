@@ -11,5 +11,11 @@
         android:showAsAction="always"
         android:title="@string/gallery"
         android:icon="@drawable/gallery_icon" />
+    <item
+        android:id="@+id/camera"
+        android:orderInCategory="2"
+        android:showAsAction="always"
+        android:title="@string/camera"
+        android:icon="@drawable/camera_icon" />
 
 </menu>
