@@ -7,5 +7,6 @@
     <string name="title_activity_overview">Overview</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
+    <string name="title_activity_photo">PhotoActivity</string>
 
 </resources>
