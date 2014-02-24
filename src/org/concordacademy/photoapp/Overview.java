@@ -27,6 +27,7 @@ import android.widget.ImageView;
 public class Overview extends Activity {
 
 	public String TAG = "Overview";
+	private int numImages = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +97,15 @@ public class Overview extends Activity {
 			}
 			LayoutInflater inflater = LayoutInflater.from(this);
 			
+			if (numImages > 5) {
+				// Move 1 row down
+			}
+			
 			GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
 			ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			ImageView imageView2 = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-			
+						
 			imageView.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -125,6 +130,8 @@ public class Overview extends Activity {
 			container.addView(imageView2,layout2);
 			Log.i(TAG, Float.toString(imageView2.getX()));
 			Log.i(TAG, Float.toString(imageView2.getY()));
+			
+			numImages += 1;
 		}
     }
 	
