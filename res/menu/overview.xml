@@ -17,5 +17,6 @@
         android:showAsAction="always"
         android:title="@string/camera"
         android:icon="@drawable/camera_icon" />
+    <item android:id="@+id/delete" android:title="Clear Images"></item>
 
 </menu>

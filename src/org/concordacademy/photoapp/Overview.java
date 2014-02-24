@@ -1,10 +1,14 @@
 package org.concordacademy.photoapp;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,6 +32,7 @@ public class Overview extends Activity {
 
 	public String TAG = "Overview";
 	private int numImages = 0;
+	ArrayList<String> picturePaths;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,22 @@ public class Overview extends Activity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+				
+		try {
+			BufferedReader readFile = new BufferedReader(new InputStreamReader(openFileInput("photos.txt")));
+			picturePaths = new ArrayList<String>();
+			String receiveString = "";
+			while ((receiveString = readFile.readLine()) != null) {
+				picturePaths.add(receiveString);
+				Log.wtf("picture", receiveString);
+				addImage(receiveString);
+				receiveString = "";
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -57,6 +78,8 @@ public class Overview extends Activity {
 			sendIntentToGallery();
 		} else if (item.getItemId() == R.id.camera) {
 			sendIntentToCamera();
+		} else if(item.getItemId() == R.id.delete) {
+			
 		}
 		
 		return true;
@@ -92,7 +115,11 @@ public class Overview extends Activity {
 			
 			try {
 				BufferedOutputStream toFile = new BufferedOutputStream(openFileOutput("photos.txt", MODE_APPEND));
-			} catch (FileNotFoundException e) {
+				toFile.write(picturePath.getBytes());
+				toFile.write('\n');
+				toFile.flush();
+				toFile.close();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			LayoutInflater inflater = LayoutInflater.from(this);
@@ -103,7 +130,6 @@ public class Overview extends Activity {
 			
 			GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
 			ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
-			ImageView imageView2 = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 						
 			imageView.setOnClickListener(new OnClickListener() {
@@ -126,14 +152,40 @@ public class Overview extends Activity {
 			GridLayout.LayoutParams layout2 = new GridLayout.LayoutParams(layout);
 			layout.columnSpec = GridLayout.spec(0);
 			//layout2.columnSpec = GridLayout.spec(1);
-			container.addView(imageView,layout);
-			container.addView(imageView2,layout2);
-			Log.i(TAG, Float.toString(imageView2.getX()));
-			Log.i(TAG, Float.toString(imageView2.getY()));
+			container.addView(imageView,layout);			
 			
 			numImages += 1;
 		}
     }
+	
+	public void addImage(String fileName) {
+		LayoutInflater inflater = LayoutInflater.from(this);
+		GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
+		ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
+		imageView.setImageBitmap(BitmapFactory.decodeFile(fileName));
+					
+		imageView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				onImageClick(arg0);
+			}
+        	
+        });
+		
+		//imageView2.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+		imageView.setVisibility(0);
+		//imageView2.setVisibility(0);
+		GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
+		layout.setGravity(Gravity.LEFT | Gravity.TOP);
+		layout.width = 150;
+		layout.height = 115;
+		layout.setMargins(5, 5, 5, 5);
+		GridLayout.LayoutParams layout2 = new GridLayout.LayoutParams(layout);
+		layout.columnSpec = GridLayout.spec(0);
+		//layout2.columnSpec = GridLayout.spec(1);
+		container.addView(imageView,layout);
+	}
 	
 	public void onImageClick(View v) {
 		Intent intent = new Intent(getBaseContext(), PhotoActivity.class);
