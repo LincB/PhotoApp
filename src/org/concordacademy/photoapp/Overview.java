@@ -64,7 +64,7 @@ public class Overview extends Activity {
 	public void sendIntentToCamera() {
 		Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-		startActivityForResult(i, 1);
+		startActivityForResult(i, 2);
 	}
 
 	@Override
@@ -125,6 +125,19 @@ public class Overview extends Activity {
 			container.addView(imageView2,layout2);
 			Log.i(TAG, Float.toString(imageView2.getX()));
 			Log.i(TAG, Float.toString(imageView2.getY()));
+		}else if(requestCode == 2 && resultCode == RESULT_OK){
+			Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+               Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+               cursor.moveToFirst();
+
+               int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+              //file path of captured image
+               String filePath = cursor.getString(columnIndex); 
+               //file path of captured image
+               Log.i(TAG, filePath);
+               cursor.close();
 		}
     }
 	
