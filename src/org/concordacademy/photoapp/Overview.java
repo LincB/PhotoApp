@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.GridLayout;
@@ -28,9 +29,29 @@ public class Overview extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_overview);
+		
+	}
+	
+	public void sendIntentToGallery() {
 		Intent i = new Intent(
 				Intent.ACTION_PICK,
 				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+		startActivityForResult(i, 1);
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.gallery) {
+			sendIntentToGallery();
+		} else if (item.getItemId() == R.id.camera) {
+			sendIntentToCamera();
+		}
+		
+		return true;
+	}
+	
+	public void sendIntentToCamera() {
+		Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
 		startActivityForResult(i, 1);
 	}
@@ -73,9 +94,9 @@ public class Overview extends Activity {
 	        	
 	        });
 			
-			imageView2.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+			//imageView2.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 			imageView.setVisibility(0);
-			imageView2.setVisibility(0);
+			//imageView2.setVisibility(0);
 			GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
 			layout.setGravity(Gravity.LEFT | Gravity.TOP);
 			layout.width = 150;

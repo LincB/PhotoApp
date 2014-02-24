@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 
@@ -16,15 +15,14 @@ public class PhotoActivity extends Activity {
 		setContentView(R.layout.activity_photo);
 		
 		Bundle extras = getIntent().getExtras();
-		if (extras == null) {
-			Log.wtf("NULL", "NULL");
+		if (extras != null) {
+			byte[] b = extras.getByteArray("image");
+	
+			Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
+			
+			ImageView img = (ImageView) findViewById(R.id.imageView1);
+			img.setImageBitmap(bmp);
 		}
-		byte[] b = extras.getByteArray("image");
-
-		Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
-		
-		ImageView img = (ImageView) findViewById(R.id.imageView1);
-		img.setImageBitmap(bmp);
 	}
 
 	@Override
@@ -33,7 +31,4 @@ public class PhotoActivity extends Activity {
 		getMenuInflater().inflate(R.menu.photo, menu);
 		return true;
 	}
-	
-	
-
 }
