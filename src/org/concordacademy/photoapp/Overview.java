@@ -27,7 +27,8 @@ import android.widget.ImageView;
 public class Overview extends Activity {
 
 	public String TAG = "Overview";
-	
+	private int numImages = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,7 +43,7 @@ public class Overview extends Activity {
 			}
 		}
 	}
-	
+
 	public void sendIntentToGallery() {
 		Intent i = new Intent(
 				Intent.ACTION_PICK,
@@ -50,17 +51,17 @@ public class Overview extends Activity {
 
 		startActivityForResult(i, 1);
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.gallery) {
 			sendIntentToGallery();
 		} else if (item.getItemId() == R.id.camera) {
 			sendIntentToCamera();
 		}
-		
+
 		return true;
 	}
-	
+
 	public void sendIntentToCamera() {
 		Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -75,8 +76,8 @@ public class Overview extends Activity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	super.onActivityResult(requestCode, resultCode, data);
-    	
+		super.onActivityResult(requestCode, resultCode, data);
+
 		if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
 			Uri selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -88,28 +89,32 @@ public class Overview extends Activity {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			
+
 			try {
 				BufferedOutputStream toFile = new BufferedOutputStream(openFileOutput("photos.txt", MODE_APPEND));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 			LayoutInflater inflater = LayoutInflater.from(this);
-			
+
+			if (numImages > 5) {
+				// Move 1 row down
+			}
+
 			GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
 			ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			ImageView imageView2 = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-			
+
 			imageView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
 					onImageClick(arg0);
 				}
-	        	
-	        });
-			
+
+			});
+
 			//imageView2.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 			imageView.setVisibility(0);
 			//imageView2.setVisibility(0);
@@ -125,39 +130,40 @@ public class Overview extends Activity {
 			container.addView(imageView2,layout2);
 			Log.i(TAG, Float.toString(imageView2.getX()));
 			Log.i(TAG, Float.toString(imageView2.getY()));
+			numImages += 1;
 		}else if(requestCode == 2 && resultCode == RESULT_OK){
 			Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+			String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-               Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-               cursor.moveToFirst();
+			Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+			cursor.moveToFirst();
 
-               int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-              //file path of captured image
-               String filePath = cursor.getString(columnIndex); 
-               //file path of captured image
-               Log.i(TAG, filePath);
-               cursor.close();
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			//file path of captured image
+			String filePath = cursor.getString(columnIndex); 
+			//file path of captured image
+			Log.i(TAG, filePath);
+			cursor.close();
 		}
-    }
-	
+	}
+
 	public void onImageClick(View v) {
 		Intent intent = new Intent(getBaseContext(), PhotoActivity.class);
-		
+
 		startActivity(intent);
 		Bitmap bitmap = ((BitmapDrawable)((ImageView) v).getDrawable()).getBitmap();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos); 
 		byte[] b = baos.toByteArray();
-		
+
 		intent.putExtra("image", b);
-		
+
 		startActivity(intent);
 	}
-	
+
 	@Override
 	protected void onNewIntent(Intent intent) {
-	    super.onNewIntent(intent);
-	    setIntent(intent);
+		super.onNewIntent(intent);
+		setIntent(intent);
 	}
 }
