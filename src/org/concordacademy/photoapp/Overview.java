@@ -1,5 +1,10 @@
 package org.concordacademy.photoapp;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,6 +27,15 @@ public class Overview extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_overview);
+		File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
+		Log.i(TAG, file.getAbsolutePath());
+		if(!file.exists()){
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		Intent i = new Intent(
 				Intent.ACTION_PICK,
 				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -51,6 +65,11 @@ public class Overview extends Activity {
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
 			
+			try {
+				BufferedOutputStream toFile = new BufferedOutputStream(openFileOutput("photos.txt", MODE_APPEND));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 			LayoutInflater inflater = LayoutInflater.from(this);
 			
 			GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
@@ -64,9 +83,10 @@ public class Overview extends Activity {
 			layout.setGravity(Gravity.LEFT | Gravity.TOP);
 			layout.width = 150;
 			layout.height = 115;
+			layout.setMargins(5, 5, 5, 5);
 			GridLayout.LayoutParams layout2 = new GridLayout.LayoutParams(layout);
-			layout.rowSpec = GridLayout.spec(0);
-			layout2.rowSpec = GridLayout.spec(1);
+			layout.columnSpec = GridLayout.spec(0);
+			//layout2.columnSpec = GridLayout.spec(1);
 			container.addView(imageView,layout);
 			container.addView(imageView2,layout2);
 			Log.i(TAG, Float.toString(imageView2.getX()));
