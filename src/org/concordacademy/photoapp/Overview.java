@@ -32,12 +32,8 @@ public class Overview extends Activity {
 
 	public String TAG = "Overview";
 	private int numImages = 0;
-<<<<<<< HEAD
 	ArrayList<String> picturePaths;
-	
-=======
 
->>>>>>> fc35b2515bc29e81acc2b1b13205d9e2332911bb
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -156,17 +152,10 @@ public class Overview extends Activity {
 			GridLayout.LayoutParams layout2 = new GridLayout.LayoutParams(layout);
 			layout.columnSpec = GridLayout.spec(0);
 			//layout2.columnSpec = GridLayout.spec(1);
-<<<<<<< HEAD
 			container.addView(imageView,layout);			
 			
-=======
-			container.addView(imageView,layout);
-			container.addView(imageView2,layout2);
-			Log.i(TAG, Float.toString(imageView2.getX()));
-			Log.i(TAG, Float.toString(imageView2.getY()));
->>>>>>> fc35b2515bc29e81acc2b1b13205d9e2332911bb
 			numImages += 1;
-		}else if(requestCode == 2 && resultCode == RESULT_OK){
+		} else if(requestCode == 2 && resultCode == RESULT_OK){
 			Uri selectedImage = data.getData();
 			String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
@@ -180,8 +169,8 @@ public class Overview extends Activity {
 			Log.i(TAG, filePath);
 			cursor.close();
 		}
-<<<<<<< HEAD
-    }
+
+	}
 	
 	public void addImage(String fileName) {
 		LayoutInflater inflater = LayoutInflater.from(this);
@@ -212,10 +201,6 @@ public class Overview extends Activity {
 		container.addView(imageView,layout);
 	}
 	
-=======
-	}
-
->>>>>>> fc35b2515bc29e81acc2b1b13205d9e2332911bb
 	public void onImageClick(View v) {
 		Intent intent = new Intent(getBaseContext(), PhotoActivity.class);
 
