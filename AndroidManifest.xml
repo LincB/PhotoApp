@@ -7,7 +7,8 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name="org.concordacademy.photoapp.Overview" android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="org.concordacademy.photoapp.PhotoActivity"
+            android:label="@string/title_activity_photo" >
+        </activity>
     </application>
 
 </manifest>
