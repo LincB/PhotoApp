@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -79,7 +78,9 @@ public class Overview extends Activity {
 		} else if (item.getItemId() == R.id.camera) {
 			sendIntentToCamera();
 		} else if(item.getItemId() == R.id.delete) {
-			
+			File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
+			file.delete();
+			onCreate(null);
 		}
 
 		return true;
@@ -101,104 +102,110 @@ public class Overview extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
-			Uri selectedImage = data.getData();
-			String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-			Cursor cursor = getContentResolver().query(selectedImage,
-					filePathColumn, null, null, null);
-			cursor.moveToFirst();
-
-			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			String picturePath = cursor.getString(columnIndex);
-			cursor.close();
-
-			try {
-				BufferedOutputStream toFile = new BufferedOutputStream(openFileOutput("photos.txt", MODE_APPEND));
-				toFile.write(picturePath.getBytes());
-				toFile.write('\n');
-				toFile.flush();
-				toFile.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			LayoutInflater inflater = LayoutInflater.from(this);
-
-			if (numImages > 5) {
-				// Move 1 row down
-			}
-
-			GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
-			ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
-			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
-			imageView.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View arg0) {
-					onImageClick(arg0);
+		if (resultCode == RESULT_OK && null != data) {
+			if (requestCode == 1) {
+				Uri selectedImage = data.getData();
+				String[] filePathColumn = { MediaStore.Images.Media.DATA };
+	
+				Cursor cursor = getContentResolver().query(selectedImage,
+						filePathColumn, null, null, null);
+				cursor.moveToFirst();
+	
+				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+				String picturePath = cursor.getString(columnIndex);
+				cursor.close();
+	
+				try {
+					BufferedOutputStream toFile = new BufferedOutputStream(openFileOutput("photos.txt", MODE_APPEND));
+					toFile.write(picturePath.getBytes());
+					toFile.write('\n');
+					toFile.flush();
+					toFile.close();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+	
+				addImage(picturePath);
+			} else if (requestCode == 2) {
+				//Uri selectedImage = data.getData();
+				
+				Bitmap photo = (Bitmap) data.getExtras().get("data");
+				
+				addImage(photo);
+				
+				/*String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-			});
+				Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+				cursor.moveToFirst();
 
-			//imageView2.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-			imageView.setVisibility(0);
-			//imageView2.setVisibility(0);
-			GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
-			layout.setGravity(Gravity.LEFT | Gravity.TOP);
-			layout.width = 150;
-			layout.height = 115;
-			layout.setMargins(5, 5, 5, 5);
-			GridLayout.LayoutParams layout2 = new GridLayout.LayoutParams(layout);
-			layout.columnSpec = GridLayout.spec(0);
-			//layout2.columnSpec = GridLayout.spec(1);
-			container.addView(imageView,layout);			
+				int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+				//file path of captured image
+				String filePath = cursor.getString(columnIndex); 
+				Log.i(TAG, filePath);
+				cursor.close();*/
+			}
 			
-			numImages += 1;
-		} else if(requestCode == 2 && resultCode == RESULT_OK){
-			Uri selectedImage = data.getData();
-			String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-			Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-			cursor.moveToFirst();
-
-			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			//file path of captured image
-			String filePath = cursor.getString(columnIndex); 
-			//file path of captured image
-			Log.i(TAG, filePath);
-			cursor.close();
 		}
 
 	}
 	
 	public void addImage(String fileName) {
+		
 		LayoutInflater inflater = LayoutInflater.from(this);
 		GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
 		ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
 		imageView.setImageBitmap(BitmapFactory.decodeFile(fileName));
 					
 		imageView.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
 				onImageClick(arg0);
 			}
-        	
         });
 		
-		//imageView2.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+		if (numImages > 5) {
+			
+		}
+		
 		imageView.setVisibility(0);
-		//imageView2.setVisibility(0);
 		GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
 		layout.setGravity(Gravity.LEFT | Gravity.TOP);
 		layout.width = 150;
 		layout.height = 115;
 		layout.setMargins(5, 5, 5, 5);
-		GridLayout.LayoutParams layout2 = new GridLayout.LayoutParams(layout);
 		layout.columnSpec = GridLayout.spec(0);
-		//layout2.columnSpec = GridLayout.spec(1);
 		container.addView(imageView,layout);
+		
+		numImages += 1;
+	}
+	
+	public void addImage(Bitmap b) {
+		LayoutInflater inflater = LayoutInflater.from(this);
+		GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
+		ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
+		imageView.setImageBitmap(b);
+					
+		imageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				onImageClick(arg0);
+			}
+        });
+		
+		if (numImages > 5) {
+			
+		}
+		
+		imageView.setVisibility(0);
+		GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
+		layout.setGravity(Gravity.LEFT | Gravity.TOP);
+		layout.width = 150;
+		layout.height = 115;
+		layout.setMargins(5, 5, 5, 5);
+		layout.columnSpec = GridLayout.spec(0);
+		container.addView(imageView,layout);
+		
+		numImages += 1;
 	}
 	
 	public void onImageClick(View v) {
