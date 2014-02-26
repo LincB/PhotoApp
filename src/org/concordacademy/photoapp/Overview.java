@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
@@ -170,7 +171,7 @@ public class Overview extends Activity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				addImage(photo);
+				addImage(photo, photoFileName.getAbsolutePath());
 			}
 
 		}
@@ -178,10 +179,10 @@ public class Overview extends Activity {
 	}
 
 	public void addImage(String fileName) {
-		addImage(BitmapFactory.decodeFile(fileName));
+		addImage(BitmapFactory.decodeFile(fileName), fileName);
 	}
 
-	public void addImage(Bitmap b) {
+	public void addImage(Bitmap b, final String path) {
 		LayoutInflater inflater = LayoutInflater.from(this);
 		GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
 		ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
@@ -191,6 +192,23 @@ public class Overview extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				onImageClick(arg0);
+			}
+		});
+		
+		imageView.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				for (int i = 0; i < picturePaths.size(); i++) {
+					if (path == picturePaths.get(i)) {
+						picturePaths.remove(i);
+						onCreate(null);
+					}
+				}
+				
+				Log.wtf("THING", "Clicked");
+				
+				return false;
 			}
 		});
 		
