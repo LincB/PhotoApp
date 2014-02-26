@@ -41,6 +41,11 @@ public class Overview extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_overview);
+		
+		refreshImages();
+	}
+	
+	public void refreshImages() {
 		File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 		Log.i(TAG, file.getAbsolutePath());
 		if(!file.exists()){
@@ -83,7 +88,7 @@ public class Overview extends Activity {
 		} else if(item.getItemId() == R.id.delete) {
 			File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 			file.delete();
-			onCreate(null);
+			refreshImages();
 		}
 
 		return true;
