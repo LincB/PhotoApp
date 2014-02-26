@@ -36,6 +36,7 @@ public class Overview extends Activity {
 	public String TAG = "Overview";
 	private int numImages = 0;
 	ArrayList<String> picturePaths;
+	int maxColumns = 4;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -174,33 +175,7 @@ public class Overview extends Activity {
 	}
 
 	public void addImage(String fileName) {
-
-		LayoutInflater inflater = LayoutInflater.from(this);
-		GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
-		ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
-		imageView.setImageBitmap(BitmapFactory.decodeFile(fileName));
-
-		imageView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				onImageClick(arg0);
-			}
-		});
-
-		if (numImages > 5) {
-
-		}
-
-		imageView.setVisibility(0);
-		GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
-		layout.setGravity(Gravity.LEFT | Gravity.TOP);
-		layout.width = 150;
-		layout.height = 115;
-		layout.setMargins(5, 5, 5, 5);
-		layout.columnSpec = GridLayout.spec(0);
-		container.addView(imageView,layout);
-
-		numImages += 1;
+		addImage(BitmapFactory.decodeFile(fileName));
 	}
 
 	public void addImage(Bitmap b) {
