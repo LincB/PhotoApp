@@ -34,9 +34,10 @@ import android.widget.ImageView;
 public class Overview extends Activity {
 
 	public String TAG = "Overview";
-	private int numImages = 0;
 	ArrayList<String> picturePaths;
-	int maxColumns = 4;
+	int maxColumns = 5;
+	int row = 0;
+	int column = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -193,22 +194,21 @@ public class Overview extends Activity {
 			}
 		});
 		
-		imageView.setOn
-
-		if (numImages > 5) {
-
-		}
-
 		imageView.setVisibility(0);
 		GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
 		layout.setGravity(Gravity.LEFT | Gravity.TOP);
 		layout.width = 150;
 		layout.height = 115;
 		layout.setMargins(5, 5, 5, 5);
-		layout.columnSpec = GridLayout.spec(0);
+		layout.columnSpec = GridLayout.spec(column);
+		layout.rowSpec = GridLayout.spec(row);
+		if(column >= maxColumns - 1){
+			column = 0;
+			row++;
+		}else{
+			column++;
+		}
 		container.addView(imageView,layout);
-
-		numImages += 1;
 	}
 
 	public void onImageClick(View v) {
