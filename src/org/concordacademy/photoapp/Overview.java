@@ -49,7 +49,7 @@ public class Overview extends Activity {
 	public void refreshImages() {
 		File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 		Log.i(TAG, file.getAbsolutePath());
-		if(!file.exists()){
+		if (!file.exists()) {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
@@ -89,7 +89,9 @@ public class Overview extends Activity {
 		} else if(item.getItemId() == R.id.delete) {
 			File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 			file.delete();
-			refreshImages();
+			
+			//refreshImages();
+			onCreate(null);
 		}
 
 		return true;
@@ -190,6 +192,8 @@ public class Overview extends Activity {
 				onImageClick(arg0);
 			}
 		});
+		
+		imageView.setOn
 
 		if (numImages > 5) {
 
