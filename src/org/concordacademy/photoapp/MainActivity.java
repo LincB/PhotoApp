@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void enterApp(View v) {
+		// Send an intent to Overview if the viewImages button was clicked
 		Log.i(tag, "Starting overview screen");
 		Intent intent = new Intent(this, Overview.class);
 		startActivity(intent);

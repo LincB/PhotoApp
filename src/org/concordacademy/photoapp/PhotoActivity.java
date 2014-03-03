@@ -14,6 +14,7 @@ public class PhotoActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_photo);
 		
+		// Get the bitmap of the image that was clicked in Overview from the extras of the intent
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			byte[] b = extras.getByteArray("image");

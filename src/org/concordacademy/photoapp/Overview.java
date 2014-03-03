@@ -2,12 +2,14 @@ package org.concordacademy.photoapp;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -40,17 +42,22 @@ public class Overview extends Activity {
 	int row = 0;
 	int column = 0;
 
+	// onCreate is used as refreshing the screen and images later in the program
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_overview);
 		
+		// Refresh the images
 		refreshImages();
 	}
 	
+	// Refresh the images that are being displayed (re-read them from the file)
 	public void refreshImages() {
+		// Open the file
 		File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 		Log.i(TAG, file.getAbsolutePath());
+		// If there is no file, create a new one
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
@@ -60,11 +67,14 @@ public class Overview extends Activity {
 		}
 
 		try {
+			// Open an inputStream for reading the file
 			FileInputStream inStream = openFileInput("photos.txt");
 			BufferedReader readFile = new BufferedReader(new InputStreamReader(inStream));
 			picturePaths = new ArrayList<String>();
 			String receiveString = "";
+			// Read in each line
 			while ((receiveString = readFile.readLine()) != null) {
+				// Add the line to picturePaths and add an Image with the path specified
 				picturePaths.add(receiveString);
 				Log.i("picture", receiveString);
 				addImage(receiveString);
@@ -75,33 +85,41 @@ public class Overview extends Activity {
 		}
 	}
 
+	// Send an intent to the gallery app
 	public void sendIntentToGallery() {
 		Intent i = new Intent(
 				Intent.ACTION_PICK,
 				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
+		// Send the intent with id 1
 		startActivityForResult(i, 1);
 	}
 
+	// Check if something on the menu was pressed
 	public boolean onOptionsItemSelected(MenuItem item) {
+		// If the gallery button was pressed, send an intent to the gallery
 		if (item.getItemId() == R.id.gallery) {
 			sendIntentToGallery();
+		// If the camera button was pressed, send an intent to the camera
 		} else if (item.getItemId() == R.id.camera) {
 			sendIntentToCamera();
+		// If the delete button was pressed, delete the file containing image paths
 		} else if(item.getItemId() == R.id.delete) {
 			File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 			file.delete();
 			
-			//refreshImages();
+			// Refresh the images by using onCreate (needed to refresh screen)
 			onCreate(null);
 		}
 
 		return true;
 	}
 
+	// Send an intent to the camera
 	public void sendIntentToCamera() {
 		Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
+		
+		// Send the intent with id 2
 		startActivityForResult(i, 2);
 	}
 
@@ -112,11 +130,15 @@ public class Overview extends Activity {
 		return true;
 	}
 
+	// Called when the user has returned to the photoapp from another app (gallery or camera)
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
+		// If there is data
 		if (resultCode == RESULT_OK && null != data) {
+			// If the intent we are coming back from is the gallery...
 			if (requestCode == 1) {
+				// Get the image that the gallery app says was selected by the user
 				Uri selectedImage = data.getData();
 				String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
@@ -129,6 +151,7 @@ public class Overview extends Activity {
 				cursor.close();
 
 				try {
+					// Write the image's path to the file so that it will be saved
 					BufferedOutputStream toFile = new BufferedOutputStream(openFileOutput("photos.txt", MODE_APPEND));
 					toFile.write(picturePath.getBytes());
 					toFile.write('\n');
@@ -138,8 +161,11 @@ public class Overview extends Activity {
 					e.printStackTrace();
 				}
 
+				// Add the image to the screen
 				addImage(picturePath);
+			// If the app that we are coming from is the camera...
 			} else if (requestCode == 2) {
+				// Get the image the camera took from the data in the intent
 				Bitmap photo = (Bitmap) data.getExtras().get("data");
 				File photoFolder = new File(Environment.getExternalStorageDirectory(), "/");
 				photoFolder.mkdir();
@@ -155,6 +181,7 @@ public class Overview extends Activity {
 				File photoFileName = new File(photoFolder, date.toString() + ".jpg");
 				try
 				{
+					// Write the bitmap to a file
 					photoFileName.createNewFile();
 					out = new FileOutputStream(photoFileName);
 					photo.compress(Bitmap.CompressFormat.JPEG, 100, out);
@@ -163,6 +190,7 @@ public class Overview extends Activity {
 					out = null;
 					MediaStore.Images.Media.insertImage(getContentResolver(), photo, photoFileName.toString() , "");
 					
+					// Write the image's path to the file to be saved
 					BufferedOutputStream toFile = new BufferedOutputStream(openFileOutput("photos.txt", MODE_APPEND));
 					toFile.write(photoFileName.getAbsolutePath().getBytes());
 					toFile.write('\n');
@@ -171,23 +199,30 @@ public class Overview extends Activity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				// Add the image to the screen
 				addImage(photo, photoFileName.getAbsolutePath());
+				Log.d("PATH", photoFileName.getAbsolutePath());
 			}
-
 		}
-
 	}
 
+	// Add an image with a string as an argument (overloaded with other addImage)
 	public void addImage(String fileName) {
 		addImage(BitmapFactory.decodeFile(fileName), fileName);
 	}
 
+	// Add an image with a bitmap as the argument
 	public void addImage(Bitmap b, final String path) {
+		// Find the gridlayout
 		LayoutInflater inflater = LayoutInflater.from(this);
 		GridLayout container = (GridLayout) findViewById(R.id.GridLayout1);
+		// Create a new imageView
 		ImageView imageView = (ImageView) inflater.inflate(R.layout.photo_frame,null);
+		// Set the imageView's picture
 		imageView.setImageBitmap(b);
 
+		// Set the onClick listener
+		// This will make the image that was clicked larger
 		imageView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -195,24 +230,81 @@ public class Overview extends Activity {
 			}
 		});
 		
+		// Set the onLongClick listener
+		// This will delete the image that was "longClicked"
 		imageView.setOnLongClickListener(new OnLongClickListener() {
 
 			@Override
 			public boolean onLongClick(View v) {
-				for (int i = 0; i < picturePaths.size(); i++) {
-					if (path == picturePaths.get(i)) {
-						picturePaths.remove(i);
-						onCreate(null);
-					}
-				}
-				
 				Log.wtf("THING", "Clicked");
 				
+				// Create an ArrayList to contain everything in the text file
+				ArrayList<String> textFileContent = new ArrayList<String>();
+				
+				try {
+					// Prepare to read from the file
+					FileInputStream inStream = openFileInput("photos.txt");
+					
+					BufferedReader reader = new BufferedReader(new InputStreamReader(inStream));
+
+					String currentLine;
+					String lineToRemove = path;
+
+					// Iterate through the lines of the file
+					while ((currentLine = reader.readLine()) != null) {
+						
+						// Add each line to the ArrayList
+						textFileContent.add(currentLine);
+						
+						Log.i("LINE TO REMOVE", lineToRemove);
+						Log.i("CURRENT LINE", currentLine);
+						if (currentLine.trim().equals(lineToRemove)) {
+							// If the currentLine is the line we need to remove, remove it from the ArrayList
+							textFileContent.remove(currentLine);
+						}
+						
+					}
+					
+					// Delete the old file (needs to be re written)
+					File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
+					file.delete();
+					
+					// Create the file again (this time it is empty)
+					try {
+						file.createNewFile();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					// Prepare to write the new file
+					FileOutputStream outStream = openFileOutput("photos.txt", MODE_APPEND);
+					BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream));
+					
+					// Iterate through textFileContent
+					for (int c = 0; c < textFileContent.size(); c++) {
+						// Write all of textFileContent to the new file (everything that was in the old 
+						// file except what needed to be deleted
+						writer.write(textFileContent.get(c) + "\n");
+						Log.d("WROTE LINE", textFileContent.get(c));
+					}
+					
+					// Close the streams
+					writer.close();
+					reader.close();
+				
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// Refresh the display
+				onCreate(null);
 				return false;
 			}
 		});
 		
+		// Set the image to be visible
 		imageView.setVisibility(0);
+		// Add all the layout parameters (this is what the XML does but in java this time)
 		GridLayout.LayoutParams layout = new GridLayout.LayoutParams();
 		layout.setGravity(Gravity.LEFT | Gravity.TOP);
 		layout.width = 150;
@@ -220,19 +312,21 @@ public class Overview extends Activity {
 		layout.setMargins(5, 5, 5, 5);
 		layout.columnSpec = GridLayout.spec(column);
 		layout.rowSpec = GridLayout.spec(row);
-		if(column >= maxColumns - 1){
+		if (column >= maxColumns - 1) {
 			column = 0;
 			row++;
-		}else{
+		} else{
 			column++;
 		}
 		container.addView(imageView,layout);
 	}
 
+	// If the image is clicked
 	public void onImageClick(View v) {
+		// Send an intent to PhotoActivity
 		Intent intent = new Intent(getBaseContext(), PhotoActivity.class);
-
-		startActivity(intent);
+		
+		// Get the bitmap of the image that was clicked and send that as an extra
 		Bitmap bitmap = ((BitmapDrawable)((ImageView) v).getDrawable()).getBitmap();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos); 
