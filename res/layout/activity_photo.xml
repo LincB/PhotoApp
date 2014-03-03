@@ -15,6 +15,7 @@
         android:layout_height="447dp"
         android:layout_x="7dp"
         android:layout_y="2dp"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        android:visibility="gone" />
 
 </AbsoluteLayout>

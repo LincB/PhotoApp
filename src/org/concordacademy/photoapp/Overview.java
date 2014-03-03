@@ -293,7 +293,6 @@ public class Overview extends Activity {
 					reader.close();
 				
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				// Refresh the display
