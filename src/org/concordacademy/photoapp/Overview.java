@@ -41,7 +41,7 @@ public class Overview extends Activity {
 	int maxColumns = 5;
 	int row = 0;
 	int column = 0;
-
+	
 	// onCreate is used as refreshing the screen and images later in the program
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -293,7 +293,6 @@ public class Overview extends Activity {
 					reader.close();
 				
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				// Refresh the display

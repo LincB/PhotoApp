@@ -23,6 +23,7 @@ public class PhotoActivity extends Activity {
 			
 			ImageView img = (ImageView) findViewById(R.id.imageView1);
 			img.setImageBitmap(bmp);
+			img.setVisibility(0);
 		}
 	}
 
