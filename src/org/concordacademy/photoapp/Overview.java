@@ -18,12 +18,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,7 +48,15 @@ public class Overview extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_overview);
+		//setContentView(R.layout.activity_overview);
+		
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		Log.i(TAG, Integer.toString(width));
+		maxColumns = (width - 5) / 155;
+		Log.i(TAG, Integer.toString(maxColumns));
 		
 		// Refresh the images
 		refreshImages();
@@ -54,6 +64,7 @@ public class Overview extends Activity {
 	
 	// Refresh the images that are being displayed (re-read them from the file)
 	public void refreshImages() {
+		setContentView(R.layout.activity_overview);
 		// Open the file
 		File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 		Log.i(TAG, file.getAbsolutePath());
@@ -109,7 +120,7 @@ public class Overview extends Activity {
 			file.delete();
 			
 			// Refresh the images by using onCreate (needed to refresh screen)
-			onCreate(null);
+			refreshImages();
 		}
 
 		return true;
