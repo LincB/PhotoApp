@@ -65,6 +65,8 @@ public class Overview extends Activity {
 	// Refresh the images that are being displayed (re-read them from the file)
 	public void refreshImages() {
 		setContentView(R.layout.activity_overview);
+		row = 0;
+		column = 0;
 		// Open the file
 		File file = new File(getFilesDir().getAbsoluteFile() + "/photos.txt");
 		Log.i(TAG, file.getAbsolutePath());
@@ -307,8 +309,8 @@ public class Overview extends Activity {
 					e.printStackTrace();
 				}
 				// Refresh the display
-				onCreate(null);
-				return false;
+				refreshImages();
+				return true;
 			}
 		});
 		
